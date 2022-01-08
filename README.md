@@ -1,9 +1,10 @@
-# A LLVM Intermediate Representation Code Generator Library [WIP]
+# A LLVM IR Code Generator Library [WIP]
 
-This library aims to implmenet generator code for the entire LLVM IR language in rust.
+This library aims to implmenet generator code for the entire LLVM intermediat representation language in rust.
 
 ## Installation
 
+Add the following to your `Cargo.toml` of your rust project
 ```toml
 [dependencies]
 llvm_ir_generator = { git = "https://github.com/einsjannis/llvm_ir_generator" }
@@ -36,4 +37,3 @@ LLVM is very usfull in the following cases:
  - You don't want to write your own code optimizations.
 
 because it handles all of this for you.
-
