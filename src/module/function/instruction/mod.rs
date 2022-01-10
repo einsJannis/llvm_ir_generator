@@ -2,11 +2,11 @@ use std::any::Any;
 use std::cell::Ref;
 use std::fmt::{Debug, Display, Formatter};
 use std::rc::Rc;
-use crate::{Element, Value, WithName, WithReturnType};
+use crate::{CallingConvention, Element, Value, WithName, WithReturnType};
 use crate::constant::Constant;
 use crate::module::function::{Function, LocalElement, LocalElementWithName};
 use crate::reference::Reference;
-use crate::types::Type;
+use crate::types::{function, Type};
 
 #[derive(Clone, Debug)]
 pub struct InstructionBlock {
@@ -170,6 +170,7 @@ impl TerminatorInstruction for Switch {}
 
 #[derive(Clone, Debug)]
 struct IndirectBranch {
+    block: Rc<InstructionBlock>,
     value: Box<dyn Value>,
     possibilities: Vec<Reference<InstructionBlock>>
 }
@@ -182,6 +183,41 @@ impl Display for IndirectBranch {
             if i < self.possibilities.len()-1 { f.write_str(", ") }
         }
         f.write_str(" ]");
+        Ok(())
+    }
+}
+
+impl Instruction for IndirectBranch {
+    fn block(&self) -> Rc<InstructionBlock> {
+        self.block.clone()
+    }
+}
+
+impl TerminatorInstruction for IndirectBranch {}
+
+#[derive(Clone, Debug)]
+struct Invoke {
+    function: Function,
+    arguments: Vec<Box<dyn Value>>,
+    function_attributes: Vec<FunctionAttribute>,
+    operand_bundles: Vec<OperandBundel>,
+    normal_label: Reference<InstructionBlock>,
+    exception_label: Reference<InstructionBlock>
+}
+
+impl Display for Invoke {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_str("invoke ")?;
+        if let Some(calling_convention) = self.function.calling_convention.clone() {
+            f.write_fmt(format_args!("{} ", calling_convention))
+        }
+        if let Some(return_attributes) = self.function.return_attribute {
+            f.write_fmt(format_args!("{} ", return_attributes))
+        }
+        if let Some(address_space) = self.function.addr_space {
+            f.write_fmt(format_args!("addrspace({}) ", address_space))
+        }
+        f.write_fmt(format_args!("{} {}", self.function.return_type, self.function.reference()));
         Ok(())
     }
 }
