@@ -1,6 +1,8 @@
 use core::fmt::{Display, Debug};
 use crate::IRElement;
 
+mod global_variable;
+
 #[repr(transparent)]
 pub struct Module(Vec<ModuleElement>);
 
@@ -93,41 +95,41 @@ impl IRElement for CallingConvention {}
 
 #[derive(Debug)]
 #[repr(C)]
-pub enum VisibilityStyles {
+pub enum VisibilityStyle {
     Default,
     Hidden,
     Protected
 }
 
-impl Display for VisibilityStyles {
+impl Display for VisibilityStyle {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(match self {
-            VisibilityStyles::Default => "default",
-            VisibilityStyles::Hidden => "hidden",
-            VisibilityStyles::Protected => "protected"
+            VisibilityStyle::Default => "default",
+            VisibilityStyle::Hidden => "hidden",
+            VisibilityStyle::Protected => "protected"
         })
     }
 }
 
-impl IRElement for VisibilityStyles {}
+impl IRElement for VisibilityStyle {}
 
 #[derive(Debug)]
 #[repr(C)]
-pub enum DLLStorageClasses {
+pub enum DLLStorageClass {
     Import,
     Export
 }
 
-impl Display for DLLStorageClasses {
+impl Display for DLLStorageClass {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(match self {
-            DLLStorageClasses::Import => "dllimport",
-            DLLStorageClasses::Export => "dllexport"
+            DLLStorageClass::Import => "dllimport",
+            DLLStorageClass::Export => "dllexport"
         })
     }
 }
 
-impl IRElement for DLLStorageClasses {}
+impl IRElement for DLLStorageClass {}
 
 #[derive(Debug)]
 #[repr(C)]
@@ -168,4 +170,22 @@ impl Display for RuntimePreemptionSpecifier {
 }
 
 impl IRElement for RuntimePreemptionSpecifier {}
+
+#[derive(Debug)]
+#[repr(C)]
+pub enum UnnamedAddress {
+    Local,
+    NonLocal
+}
+
+impl Display for UnnamedAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            UnnamedAddress::Local => "local_unnamed_address",
+            UnnamedAddress::NonLocal => "unnamed_address"
+        })
+    }
+}
+
+impl IRElement for UnnamedAddress {}
 
