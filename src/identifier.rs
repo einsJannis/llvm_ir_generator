@@ -1,11 +1,15 @@
-use std::str::Chars;
+use std::{str::Chars, fmt::Formatter, fmt::Display, fmt::Debug};
+use crate::IRElement;
 
+#[derive(Debug)]
 #[repr(transparent)]
 pub struct GlobalIdentifier<'s>(&'s str);
 
+#[derive(Debug)]
 #[repr(transparent)]
 pub struct LocalIdentifier<'s>(&'s str);
 
+#[derive(Debug)]
 pub enum Identifier<'s> {
     Global(GlobalIdentifier<'s>),
     Local(LocalIdentifier<'s>)
@@ -17,6 +21,29 @@ pub enum ParseError {
     UnexpectedToken,
     IllegalToken
 }
+
+impl<'s> Display for GlobalIdentifier<'s> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
+        f.write_fmt(format_args!("@{}", self.0))
+    }
+}
+impl<'s> Display for LocalIdentifier<'s> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("%{}", self.0))
+    }
+}
+impl<'s> Display for Identifier<'s> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Identifier::Global(id) => Display::fmt(id, f),
+            Identifier::Local(id) => Display::fmt(id, f)
+        }
+    }
+}
+
+impl<'s> IRElement for GlobalIdentifier<'s> {}
+impl<'s> IRElement for LocalIdentifier<'s> {}
+impl<'s> IRElement for Identifier<'s> {}
 
 //TODO: allow quotes and escapes
 
