@@ -1,4 +1,4 @@
-use std::{str::Chars, fmt::{Formatter}, fmt::Display, fmt::Debug, string::ParseError};
+use std::{str::Chars, fmt::Formatter, fmt::Display, fmt::Debug};
 use crate::IRElement;
 
 #[derive(Debug)]
@@ -51,8 +51,7 @@ impl<'s> Identifier<'s> {
     fn is_char_valid(c: char) -> bool {
         c.is_digit(10) || c.is_alphabetic() || c == '$' || c == '.' || c == '_'
     }
-    fn read_num_ident(chars: &mut Chars) -> Result<(), ParseError> {
-        let mut s = String::new();
+    fn verify_num_ident(chars: &mut Chars) -> Result<(), ParseError> {
         let mut null = true;
         while let Some(c) = chars.next() {
             if null { null = false }
@@ -61,7 +60,7 @@ impl<'s> Identifier<'s> {
         if null { return Err(ParseError::NotEnoughTokens); }
         return Ok(());
     }
-    fn read_normal_ident(chars: &mut Chars) -> Result<(), ParseError> {
+    fn verify_normal_ident(chars: &mut Chars) -> Result<(), ParseError> {
         let first = chars.next();
         if let Some(first) = first {
             if !Self::is_char_valid(first) { return Err(ParseError::IllegalToken); }
@@ -72,15 +71,15 @@ impl<'s> Identifier<'s> {
         }
         return Err(ParseError::NotEnoughTokens);
     }
-    fn read_special_ident(chars: &mut Chars) -> Result<(), ParseError> {
+    fn verify_special_ident(chars: &mut Chars) -> Result<(), ParseError> {
         let first = chars.next();
         if let Some(first) = first {
-            if first != "\"" { return Err(ParseError::IllegalToken); }
+            if first != '"' { return Err(ParseError::IllegalToken); }
             while let Some(c) = chars.next() {
-                if c == "\"" { 
+                if c == '"' { 
                     if chars.next().is_none() { return Err(ParseError::IllegalToken); }
                 }
-                if c == "\\" {
+                if c == '\\' {
                     'inner:for _ in 0..2 {
                         if let Some(c) = chars.next() {
                             if c.is_digit(16) { continue 'inner; }
@@ -93,10 +92,10 @@ impl<'s> Identifier<'s> {
         }
         return Err(ParseError::NotEnoughTokens);
     }
-    fn read_string(string: &str) -> Result<(), ParseError> {
-        Self::read_num_ident(&string.chars()).or_else(|err| match err {
-            ParseError::IllegalToken => Self::read_normal_ident(&string.chars()).or_else(|err| match err {
-                ParseError::IllegalToken => Self::read_special_ident(&string.chars()),
+    fn verify_ident(string: &str) -> Result<(), ParseError> {
+        Self::verify_num_ident(&mut string.chars()).or_else(|err| match err {
+            ParseError::IllegalToken => Self::verify_normal_ident(&mut string.chars()).or_else(|err| match err {
+                ParseError::IllegalToken => Self::verify_special_ident(&mut string.chars()),
                 err => Err(err)
             }),
             err => Err(err)
@@ -122,7 +121,7 @@ impl<'s> TryFrom<&'s str> for GlobalIdentifier<'s> {
         if s.len() < 3 { return Err(ParseError::NotEnoughTokens); }
         let mut chars = s.chars();
         if chars.next().unwrap() != '@' { return Err(ParseError::UnexpectedToken); }
-        Identifier::read_string(s)?;
+        Identifier::verify_ident(s)?;
         Ok(GlobalIdentifier(&s[1..]))
     }
 }
@@ -133,7 +132,7 @@ impl<'s> TryFrom<&'s str> for LocalIdentifier<'s> {
         if s.len() < 3 { return Err(ParseError::NotEnoughTokens); }
         let mut chars = s.chars();
         if chars.next().unwrap() != '%' { return Err(ParseError::UnexpectedToken); }
-        if !Identifier::is_string_valid(&mut chars) { return Err(ParseError::IllegalToken); }
+        Identifier::verify_ident(s)?;
         Ok(LocalIdentifier(&s[1..]))
     }
 }
