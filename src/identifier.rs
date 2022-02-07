@@ -1,4 +1,4 @@
-use std::{str::Chars, fmt::Formatter, fmt::Display, fmt::Debug};
+use std::{str::Chars, fmt::{Formatter, Display, Debug}};
 use crate::IRElement;
 
 #[derive(Debug)]
