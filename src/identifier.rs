@@ -1,4 +1,4 @@
-use std::{str::Chars, fmt::Formatter, fmt::Display, fmt::Debug};
+use std::{str::Chars, fmt::{Formatter}, fmt::Display, fmt::Debug, string::ParseError};
 use crate::IRElement;
 
 #[derive(Debug)]
@@ -28,12 +28,12 @@ impl<'s> Display for GlobalIdentifier<'s> {
     }
 }
 impl<'s> Display for LocalIdentifier<'s> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         f.write_fmt(format_args!("%{}", self.0))
     }
 }
 impl<'s> Display for Identifier<'s> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         match self {
             Identifier::Global(id) => Display::fmt(id, f),
             Identifier::Local(id) => Display::fmt(id, f)
@@ -51,19 +51,56 @@ impl<'s> Identifier<'s> {
     fn is_char_valid(c: char) -> bool {
         c.is_digit(10) || c.is_alphabetic() || c == '$' || c == '.' || c == '_'
     }
-    fn is_string_valid(chars: &mut Chars) -> bool {
-        let first = chars.next().unwrap();
-        if first.is_digit(10) {
-            while let Some(next) = chars.next() {
-                if !next.is_digit(10) { return false; }
+    fn read_num_ident(chars: &mut Chars) -> Result<(), ParseError> {
+        let mut s = String::new();
+        let mut null = true;
+        while let Some(c) = chars.next() {
+            if null { null = false }
+            if !c.is_digit(10) { return Err(ParseError::IllegalToken); }
+        }
+        if null { return Err(ParseError::NotEnoughTokens); }
+        return Ok(());
+    }
+    fn read_normal_ident(chars: &mut Chars) -> Result<(), ParseError> {
+        let first = chars.next();
+        if let Some(first) = first {
+            if !Self::is_char_valid(first) { return Err(ParseError::IllegalToken); }
+            while let Some(c) = chars.next() {
+                if !Self::is_char_valid(c) || !c.is_digit(10) { return Err(ParseError::IllegalToken); }
             }
-            return true;
-        } else if Self::is_char_valid(first) {
-            while let Some(next) = chars.next() {
-                if !Self::is_char_valid(next) { return false; }
+            return Ok(());
+        }
+        return Err(ParseError::NotEnoughTokens);
+    }
+    fn read_special_ident(chars: &mut Chars) -> Result<(), ParseError> {
+        let first = chars.next();
+        if let Some(first) = first {
+            if first != "\"" { return Err(ParseError::IllegalToken); }
+            while let Some(c) = chars.next() {
+                if c == "\"" { 
+                    if chars.next().is_none() { return Err(ParseError::IllegalToken); }
+                }
+                if c == "\\" {
+                    'inner:for _ in 0..2 {
+                        if let Some(c) = chars.next() {
+                            if c.is_digit(16) { continue 'inner; }
+                        }
+                        return Err(ParseError::IllegalToken);
+                    }
+                }
             }
-            return true;
-        } else { return false; }
+            return Ok(());
+        }
+        return Err(ParseError::NotEnoughTokens);
+    }
+    fn read_string(string: &str) -> Result<(), ParseError> {
+        Self::read_num_ident(&string.chars()).or_else(|err| match err {
+            ParseError::IllegalToken => Self::read_normal_ident(&string.chars()).or_else(|err| match err {
+                ParseError::IllegalToken => Self::read_special_ident(&string.chars()),
+                err => Err(err)
+            }),
+            err => Err(err)
+        })
     }
 }
 
@@ -85,7 +122,7 @@ impl<'s> TryFrom<&'s str> for GlobalIdentifier<'s> {
         if s.len() < 3 { return Err(ParseError::NotEnoughTokens); }
         let mut chars = s.chars();
         if chars.next().unwrap() != '@' { return Err(ParseError::UnexpectedToken); }
-        if !Identifier::is_string_valid(&mut chars) { return Err(ParseError::IllegalToken) }
+        Identifier::read_string(s)?;
         Ok(GlobalIdentifier(&s[1..]))
     }
 }
