@@ -6,9 +6,46 @@ use crate::IRElement;
 pub enum Type {
     Integer(IntegerType),
     Float(FloatType),
+    X86AMX(X86AMXType),
     X86MMX(X86MMXType),
     Pointer(PointerType),
     Vector(VectorType),
+}
+
+impl From<IntegerType> for Type {
+    fn from(_type: IntegerType) -> Self {
+        return Type::Integer(_type);
+    }
+}
+
+impl From<FloatType> for Type {
+    fn from(_type: FloatType) -> Self {
+        return Type::Float(_type);
+    }
+}
+
+impl From<X86AMXType> for Type {
+    fn from(_type: X86AMXType) -> Self {
+        return Type::X86AMX(_type);
+    }
+}
+
+impl From<X86MMXType> for Type {
+    fn from(_type: X86MMXType) -> Self {
+        return Type::X86MMX(_type);
+    }
+}
+
+impl From<PointerType> for Type {
+    fn from(_type: PointerType) -> Self {
+        return Type::Pointer(_type);
+    }
+}
+
+impl From<VectorType> for Type {
+    fn from(_type: VectorType) -> Self {
+        return Type::Vector(_type);
+    }
 }
 
 impl Display for Type {
@@ -16,6 +53,7 @@ impl Display for Type {
         let displayable: &dyn Display = match self {
             Type::Integer(_type) => _type as &dyn Display,
             Type::Float(_type) => _type as &dyn Display,
+            Type::X86AMX(_type) => _type as &dyn Display,
             Type::X86MMX(_type) => _type as &dyn Display,
             Type::Pointer(_type) => _type as &dyn Display,
             Type::Vector(_type) => _type as &dyn Display,
@@ -93,6 +131,15 @@ pub struct PointerType {
     address_space: usize
 }
 
+impl PointerType {
+    pub fn new(_type: Box<crate::types::Type>) -> PointerType {
+        PointerType { _type, address_space: 0 }
+    }
+    pub fn new_with_address_space(_type: Box<crate::types::Type>, address_space: usize) -> PointerType {
+        PointerType { _type, address_space }
+    }
+}
+
 impl Display for PointerType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if let crate::types::Type::FirstClass(crate::types::first_class::Type::Aggregate(crate::types::first_class::aggregate::Type::OpaqueStruct(_))) = self._type.as_ref() {
@@ -118,6 +165,15 @@ pub struct VectorType {
     factor: usize,
     _type: Box<crate::types::first_class::Type>,
     scalable: bool
+}
+
+impl VectorType {
+    fn new(factor: usize, _type: Box<crate::types::first_class::Type>) -> Self {
+        VectorType { factor, _type, scalable: false }
+    }
+    fn new_scalable(factor: usize, _type: Box<crate::types::first_class::Type>) -> Self {
+        VectorType { factor, _type, scalable: true }
+    }
 }
 
 impl Display for VectorType {

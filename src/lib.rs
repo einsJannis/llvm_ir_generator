@@ -1,8 +1,8 @@
 use core::fmt::{Display, Debug};
 
-mod identifier;
-mod module;
-mod types;
+pub mod identifier;
+pub mod module;
+pub mod types;
 
-trait IRElement: Display + Debug {}
+pub trait IRElement: Display + Debug {}
 

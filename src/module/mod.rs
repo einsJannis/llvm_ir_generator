@@ -1,13 +1,13 @@
 use core::fmt::{Display, Debug};
 use crate::IRElement;
 
-mod global_variable;
+pub mod global_variable;
 
 #[repr(transparent)]
-pub struct Module(Vec<ModuleElement>);
+pub struct Module<'s>(Vec<ModuleElement<'s>>);
 
-pub enum ModuleElement {
-    
+pub enum ModuleElement<'s> {
+    GlobalVariable(global_variable::GlobalVariable<'s>)
 }
 
 #[derive(Debug)]

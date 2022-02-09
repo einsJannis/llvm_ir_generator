@@ -17,7 +17,7 @@ pub struct GlobalVariable<'s> {
     address_space: Option<usize>,
     externally_initialized: bool,
     global_variable_type: GlobalVariableType,
-    //return_type: Type,
+    return_type: crate::types::first_class::Type,
     //initializer_constant: Constant,
     //section_name: String,
     //partition_name: String,
