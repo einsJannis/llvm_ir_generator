@@ -2,7 +2,7 @@ use std::fmt::{Display, Debug};
 
 use crate::IRElement;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Type {
     Array(ArrayType),
     Struct(StructType),
@@ -38,9 +38,7 @@ impl Display for Type {
     }
 }
 
-impl IRElement for Type {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ArrayType {
     size: usize,
     _type: Box<crate::types::first_class::Type>,
@@ -58,9 +56,7 @@ impl Display for ArrayType {
     }
 }
 
-impl IRElement for ArrayType {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct StructType {
     packed: bool,
     types: Vec<crate::types::first_class::Type>
@@ -90,9 +86,7 @@ impl Display for StructType {
     }
 }
 
-impl IRElement for StructType {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct OpaqueStructType;
 
 impl Display for OpaqueStructType {
@@ -100,6 +94,4 @@ impl Display for OpaqueStructType {
         f.write_str("type opaque")
     }
 }
-
-impl IRElement for OpaqueStructType {}
 

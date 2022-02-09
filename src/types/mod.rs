@@ -4,7 +4,7 @@ use crate::IRElement;
 
 pub mod first_class;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Type {
     Void,
     Function(FunctionType),
@@ -124,9 +124,7 @@ impl Display for Type {
     }
 }
 
-impl IRElement for Type {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct FunctionType { 
     return_type: first_class::Type,
     argument_types: Vec<first_class::Type>
@@ -150,6 +148,4 @@ impl Display for FunctionType {
         Ok(())
     }
 }
-
-impl IRElement for FunctionType {}
 

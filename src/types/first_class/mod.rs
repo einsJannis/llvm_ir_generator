@@ -5,7 +5,7 @@ use crate::IRElement;
 pub mod single_value;
 pub mod aggregate;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Type {
     SingleValue(single_value::Type),
     Label(LabelType),
@@ -111,9 +111,7 @@ impl Display for Type {
     }
 }
 
-impl IRElement for Type {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct LabelType;
 
 impl Display for LabelType {
@@ -122,9 +120,7 @@ impl Display for LabelType {
     }
 }
 
-impl IRElement for LabelType {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct TokenType;
 
 impl Display for TokenType {
@@ -133,9 +129,7 @@ impl Display for TokenType {
     }
 }
 
-impl IRElement for TokenType {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct MetadataType;
 
 impl Display for MetadataType {
@@ -143,6 +137,4 @@ impl Display for MetadataType {
         f.write_str("metadata")
     }
 }
-
-impl IRElement for MetadataType {}
 

@@ -2,7 +2,7 @@ use std::fmt::{Display, Debug};
 
 use crate::IRElement;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Type {
     Integer(IntegerType),
     Float(FloatType),
@@ -62,11 +62,9 @@ impl Display for Type {
     }
 }
 
-impl IRElement for Type {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 #[repr(transparent)]
-pub struct IntegerType(usize);
+pub struct IntegerType(pub usize);
 
 impl Display for IntegerType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -74,9 +72,7 @@ impl Display for IntegerType {
     }
 }
 
-impl IRElement for IntegerType {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum FloatType {
     Half,
     BFloat,
@@ -101,9 +97,7 @@ impl Display for FloatType {
     }
 }
 
-impl IRElement for FloatType {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct X86AMXType;
 
 impl Display for X86AMXType {
@@ -112,9 +106,7 @@ impl Display for X86AMXType {
     }
 }
 
-impl IRElement for X86AMXType {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct X86MMXType;
 
 impl Display for X86MMXType {
@@ -123,9 +115,7 @@ impl Display for X86MMXType {
     }
 }
 
-impl IRElement for X86MMXType {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct PointerType {
     _type: Box<crate::types::Type>,
     address_space: usize
@@ -158,13 +148,11 @@ impl Display for PointerType {
     }
 }
 
-impl IRElement for PointerType {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct VectorType {
-    factor: usize,
-    _type: Box<crate::types::first_class::Type>,
-    scalable: bool
+    pub factor: usize,
+    pub _type: Box<crate::types::first_class::Type>,
+    pub scalable: bool
 }
 
 impl VectorType {
@@ -185,6 +173,4 @@ impl Display for VectorType {
         }
     }
 }
-
-impl IRElement for VectorType {}
 
