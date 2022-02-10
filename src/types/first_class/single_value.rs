@@ -1,8 +1,6 @@
 use std::fmt::{Display, Debug};
 
-use crate::IRElement;
-
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Type {
     Integer(IntegerType),
     Float(FloatType),
@@ -62,7 +60,7 @@ impl Display for Type {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 #[repr(transparent)]
 pub struct IntegerType(pub usize);
 
@@ -72,7 +70,7 @@ impl Display for IntegerType {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum FloatType {
     Half,
     BFloat,
@@ -97,7 +95,7 @@ impl Display for FloatType {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct X86AMXType;
 
 impl Display for X86AMXType {
@@ -106,7 +104,7 @@ impl Display for X86AMXType {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct X86MMXType;
 
 impl Display for X86MMXType {
@@ -115,7 +113,7 @@ impl Display for X86MMXType {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct PointerType {
     _type: Box<crate::types::Type>,
     address_space: usize
@@ -148,7 +146,7 @@ impl Display for PointerType {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct VectorType {
     pub factor: usize,
     pub _type: Box<crate::types::first_class::Type>,

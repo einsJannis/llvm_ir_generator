@@ -1,10 +1,12 @@
 use core::fmt::{Display, Debug};
 
-use crate::IRElement;
-
 pub mod first_class;
 
-#[derive(Debug, Clone)]
+pub trait ReturnType {
+    fn return_type(&self) -> first_class::Type;
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum Type {
     Void,
     Function(FunctionType),
@@ -124,7 +126,7 @@ impl Display for Type {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct FunctionType { 
     return_type: first_class::Type,
     argument_types: Vec<first_class::Type>

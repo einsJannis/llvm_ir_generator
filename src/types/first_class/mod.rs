@@ -1,11 +1,9 @@
 use std::fmt::Display;
 
-use crate::IRElement;
-
 pub mod single_value;
 pub mod aggregate;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Type {
     SingleValue(single_value::Type),
     Label(LabelType),
@@ -111,7 +109,7 @@ impl Display for Type {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct LabelType;
 
 impl Display for LabelType {
@@ -120,7 +118,7 @@ impl Display for LabelType {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct TokenType;
 
 impl Display for TokenType {
@@ -129,7 +127,7 @@ impl Display for TokenType {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct MetadataType;
 
 impl Display for MetadataType {
