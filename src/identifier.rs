@@ -1,15 +1,19 @@
 use std::{str::Chars, fmt::{Formatter, Display, Debug}};
 use crate::IRElement;
 
-#[derive(Debug)]
-#[repr(transparent)]
-pub struct GlobalIdentifier<'s>(&'s str);
+pub trait Identifiable {
+    fn id(&self) -> Identifier;
+}
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
+#[repr(transparent)]
+pub struct GlobalIdentifier<'s>(pub(crate) &'s str);
+
+#[derive(Debug, Clone)]
 #[repr(transparent)]
 pub struct LocalIdentifier<'s>(&'s str);
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Identifier<'s> {
     Global(GlobalIdentifier<'s>),
     Local(LocalIdentifier<'s>)

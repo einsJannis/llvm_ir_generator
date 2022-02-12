@@ -2,6 +2,7 @@ use core::fmt::{Display, Debug};
 use crate::IRElement;
 
 pub mod global_variable;
+pub mod function;
 
 #[repr(transparent)]
 pub struct Module<'s>(Vec<ModuleElement<'s>>);
