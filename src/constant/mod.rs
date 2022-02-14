@@ -7,7 +7,7 @@ pub mod simple;
 pub mod complex;
 
 #[derive(Debug)]
-pub enum Constant<'s> {
+pub enum Constant<'s, T> {
     Simple(simple::Constant<'s>),
     Complex(complex::Constant<'s>),
 }
