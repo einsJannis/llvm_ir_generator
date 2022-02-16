@@ -179,7 +179,7 @@ pub struct CatchSwitchInstruction<'s> {
 impl Display for CatchSwitchInstruction<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str("catchswitch within ")?;
-        match self.parent {
+        match &self.parent {
             Value::Constant(crate::constant::Constant::Simple(crate::constant::simple::Constant::Token(crate::constant::simple::TokenConstant))) => 
                 crate::constant::simple::TokenConstant.fmt(f)?,
             Value::Reference(it) => it.fmt(f)?,
@@ -191,7 +191,7 @@ impl Display for CatchSwitchInstruction<'_> {
             if i < (self.handlers.len()-1) { f.write_str(", ")?; }
         }
         f.write_str(" ] unwind ")?;
-        if let Some(unwind) = self.unwind { unwind.fmt(f)?; } else { f.write_str("to caller")?; }
+        if let Some(unwind) = &self.unwind { unwind.fmt(f)?; } else { f.write_str("to caller")?; }
         Ok(())
     }
 }
@@ -215,7 +215,7 @@ pub struct CleanUpReturnInstruction<'s> {
 impl Display for CleanUpReturnInstruction<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!("cleanupret from {} unwind ", self.value))?;
-        if let Some(label) = self.label { label.fmt(f)?; } else { f.write_str("to caller")?; }
+        if let Some(label) = &self.label { label.fmt(f)?; } else { f.write_str("to caller")?; }
         Ok(())
     }
 }

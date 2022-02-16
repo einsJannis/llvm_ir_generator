@@ -34,10 +34,10 @@ pub struct Function<'s> {
 impl<'s> Display for Function<'s> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str("define ")?;
-        if let Some(linkage) = self.linkage { f.write_fmt(format_args!("{} ", linkage))?; }
+        if let Some(linkage) = &self.linkage { f.write_fmt(format_args!("{} ", linkage))?; }
         if let RuntimePreemptionSpecifier::Local = self.preemtion_specifier { f.write_fmt(format_args!("{} ", self.preemtion_specifier))?; }
         if let VisibilityStyle::Default = self.visibility {} else { f.write_fmt(format_args!("{} ", self.visibility))?; }
-        if let Some(dll_storage_class) = self.dll_storage_class { f.write_fmt(format_args!("{} ", dll_storage_class))?; }
+        if let Some(dll_storage_class) = &self.dll_storage_class { f.write_fmt(format_args!("{} ", dll_storage_class))?; }
         if let CallingConvention::C = self.calling_convention {} else { f.write_fmt(format_args!("{} ", self.calling_convention))?; }
         f.write_fmt(format_args!("{} {} ( ", self.return_type, self.identifier))?;
         for (i, argument) in self.arguments.iter().enumerate() {
@@ -52,11 +52,11 @@ impl<'s> Display for Function<'s> {
         //comdat
         if self.align != 0 { f.write_fmt(format_args!(" align {}", self.align))?; }
         //gc
-        if let Some(prefix_constant) = self.prefix_constant { f.write_fmt(format_args!(" prefix {}", prefix_constant))?; }
-        if let Some(prologue_constant) = self.prologue_constant { f.write_fmt(format_args!(" prologue {}", prologue_constant))?; }
-        if let Some(personality_constant) = self.personality_constant { f.write_fmt(format_args!(" personality {}", personality_constant))?; }
+        if let Some(prefix_constant) = &self.prefix_constant { f.write_fmt(format_args!(" prefix {}", prefix_constant))?; }
+        if let Some(prologue_constant) = &self.prologue_constant { f.write_fmt(format_args!(" prologue {}", prologue_constant))?; }
+        if let Some(personality_constant) = &self.personality_constant { f.write_fmt(format_args!(" personality {}", personality_constant))?; }
         f.write_str(" {\n")?;
-        for instruction_block in self.instruction_blocks {
+        for instruction_block in &self.instruction_blocks {
             instruction_block.fmt(f)?;
         }
         f.write_str("}\n")?;
@@ -91,7 +91,7 @@ pub struct InstructionBlock<'s> {
 impl<'s> Display for InstructionBlock<'s> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!("{}:\n", self.identifier.0))?;
-        for instruction in self.instructions {
+        for instruction in &self.instructions {
             instruction.fmt(f)?;
         }
         Ok(())
