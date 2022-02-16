@@ -14,8 +14,8 @@ pub struct Function<'s> {
     dll_storage_class: Option<DLLStorageClass>,
     calling_convention: CallingConvention,
     //return_attributes: Vec<ReturnAttribute>,
-    return_type: Type,
-    arguments: Vec<Argument<'s>>,
+    pub(crate) return_type: Type,
+    pub(crate) arguments: Vec<Argument<'s>>,
     unnamed_address: Option<UnnamedAddress>,
     address_space: usize,
     //function_attributes: Vec<FunctionAttribute>,
@@ -65,8 +65,8 @@ impl<'s> Display for Function<'s> {
 }
 
 pub struct Argument<'s> {
-    return_type: Type,
-    identifier: Identifier<'s>
+    pub(crate) return_type: Type,
+    pub(crate) identifier: Identifier<'s>
 }
 
 impl<'s> Display for Argument<'s> {

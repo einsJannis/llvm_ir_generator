@@ -121,7 +121,7 @@ impl Display for InvokeInstruction<'_> {
         if self.function_ref.address_space == 0 {
             f.write_fmt(format_args!("addrspace({}) ", self.function_ref.address_space))?;
         }
-        f.write_fmt(format_args!("{} {}( ", Into::<FunctionType>::into(self.function_ref), self.function_ref.identifier))?;
+        f.write_fmt(format_args!("{} {}( ", FunctionType::from(self.function_ref), self.function_ref.identifier))?;
         for (i, argument) in self.arguments.iter().enumerate() {
             argument.fmt(f)?;
             if i < (self.arguments.len()-1) { f.write_str(", ")?; }
@@ -147,7 +147,7 @@ impl Display for CallBranchInstruction<'_> {
         if self.function_ref.address_space == 0 {
             f.write_fmt(format_args!("addrspace({}) ", self.function_ref.address_space))?;
         }
-        f.write_fmt(format_args!("{} {}( ", Into::<FunctionType>::into(self.function_ref), self.function_ref.identifier))?;
+        f.write_fmt(format_args!("{} {}( ", FunctionType::from(self.function_ref), self.function_ref.identifier))?;
         for (i, argument) in self.arguments.iter().enumerate() {
             argument.fmt(f)?;
             if i < (self.arguments.len()-1) { f.write_str(", ")?; }
@@ -166,7 +166,7 @@ pub struct ResumeInstruction<'s>(Value<'s>);
 
 impl Display for ResumeInstruction<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_fmt(format_args!("resume {}", self.0))?;
+        f.write_fmt(format_args!("resume {}", self.0))
     }
 }
 
@@ -180,7 +180,7 @@ impl Display for CatchSwitchInstruction<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str("catchswitch within ")?;
         match self.parent {
-            Value::Constant(crate::constant::simple::TokenConstant) => 
+            Value::Constant(crate::constant::Constant::Simple(crate::constant::simple::Constant::Token(crate::constant::simple::TokenConstant))) => 
                 crate::constant::simple::TokenConstant.fmt(f)?,
             Value::Reference(it) => it.fmt(f)?,
             _ => unreachable!()
@@ -188,10 +188,10 @@ impl Display for CatchSwitchInstruction<'_> {
         f.write_str(" [ ")?;
         for (i, handler) in self.handlers.iter().enumerate() { 
             handler.fmt(f)?;
-            if i < (self.handlers.len()-1) { f.write_str(", ") }
+            if i < (self.handlers.len()-1) { f.write_str(", ")?; }
         }
         f.write_str(" ] unwind ")?;
-        if let Some(unwind) = self.unwind { unwind.fmt(f)?; } else { f.write_str("to caller") }
+        if let Some(unwind) = self.unwind { unwind.fmt(f)?; } else { f.write_str("to caller")?; }
         Ok(())
     }
 }
@@ -215,7 +215,7 @@ pub struct CleanUpReturnInstruction<'s> {
 impl Display for CleanUpReturnInstruction<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!("cleanupret from {} unwind ", self.value))?;
-        if let Some(label) = self.label { label.fmt(f)?; } else { f.write_str("to caller") }
+        if let Some(label) = self.label { label.fmt(f)?; } else { f.write_str("to caller")?; }
         Ok(())
     }
 }
@@ -224,7 +224,7 @@ pub struct UnreachableInstruction;
 
 impl Display for UnreachableInstruction {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str("unreachable")?;
+        f.write_str("unreachable")
     }
 }
 

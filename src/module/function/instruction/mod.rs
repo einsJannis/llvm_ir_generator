@@ -14,18 +14,21 @@ impl Display for Instruction<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         (match self {
             Instruction::Terminal(it) => it as &dyn Display,
+            Instruction::UnaryOperator(it) => it as &dyn Display
         }).fmt(f)
     }
 }
 
 pub enum ReturningInstruction<'s> {
     Terminal(terminator::ReturningInstruction<'s>),
+    UnaryOperator(unary_operator::ReturningInstruction<'s>),
 }
 
 impl Display for ReturningInstruction<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         (match self {
             Self::Terminal(it) => it as &dyn Display,
+            Self::UnaryOperator(it) => it as &dyn Display
         }).fmt(f)
     }
 }

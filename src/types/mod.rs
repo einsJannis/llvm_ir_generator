@@ -1,5 +1,7 @@
 use core::fmt::{Display, Debug};
 
+use crate::module::function::Function;
+
 pub mod first_class;
 
 pub trait ReturnType {
@@ -148,6 +150,12 @@ impl Display for FunctionType {
         }
         f.write_str(" )")?;
         Ok(())
+    }
+}
+
+impl From<&Function<'_>> for FunctionType {
+    fn from(function: &Function) -> Self {
+        FunctionType { return_type: function.return_type.clone(), argument_types: function.arguments.iter().map(|it| it.return_type.clone()).collect() }
     }
 }
 
