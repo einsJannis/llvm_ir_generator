@@ -26,6 +26,22 @@ impl<'s> Display for Instruction<'s> {
     }
 }
 
+pub enum ReturningInstruction<'s> {
+    Invoke(InvokeInstruction<'s>),
+    CallBranch(CallBranchInstruction<'s>),
+    CatchSwitch(CatchSwitchInstruction<'s>)
+}
+
+impl<'s> Display for ReturningInstruction<'s> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        (match self {
+            Self::Invoke(it) => it as &dyn Display,
+            Self::CallBranch(it) => it as &dyn Display,
+            Self::CatchSwitch(it) => it as &dyn Display
+        }).fmt(f)
+    }
+}
+
 pub enum ReturnInstruction<'s> {
     Void,
     NonVoid(Value<'s>)
@@ -153,4 +169,62 @@ impl Display for ResumeInstruction<'_> {
         f.write_fmt(format_args!("resume {}", self.0))?;
     }
 }
- 
+
+pub struct CatchSwitchInstruction<'s> {
+    parent: Value<'s>,
+    handlers: Vec<Value<'s>>,
+    unwind: Option<Value<'s>>
+}
+
+impl Display for CatchSwitchInstruction<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("catchswitch within ")?;
+        match self.parent {
+            Value::Constant(crate::constant::simple::TokenConstant) => 
+                crate::constant::simple::TokenConstant.fmt(f)?,
+            Value::Reference(it) => it.fmt(f)?,
+            _ => unreachable!()
+        }
+        f.write_str(" [ ")?;
+        for (i, handler) in self.handlers.iter().enumerate() { 
+            handler.fmt(f)?;
+            if i < (self.handlers.len()-1) { f.write_str(", ") }
+        }
+        f.write_str(" ] unwind ")?;
+        if let Some(unwind) = self.unwind { unwind.fmt(f)?; } else { f.write_str("to caller") }
+        Ok(())
+    }
+}
+
+pub struct CatchReturnInstruction<'s> {
+    token: Value<'s>,
+    label: Value<'s>
+}
+
+impl Display for CatchReturnInstruction<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("catchret from {} to {}", self.token, self.label))
+    }
+}
+
+pub struct CleanUpReturnInstruction<'s> {
+    value: Value<'s>,
+    label: Option<Value<'s>>
+}
+
+impl Display for CleanUpReturnInstruction<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("cleanupret from {} unwind ", self.value))?;
+        if let Some(label) = self.label { label.fmt(f)?; } else { f.write_str("to caller") }
+        Ok(())
+    }
+}
+
+pub struct UnreachableInstruction;
+
+impl Display for UnreachableInstruction {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("unreachable")?;
+    }
+}
+
