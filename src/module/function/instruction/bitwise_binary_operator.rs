@@ -4,12 +4,22 @@ use crate::reference::Value;
 
 pub enum Instruction<'s> {
     ShiftLeft(ShiftLeftInstruction<'s>),
+    LogicalShiftLeft(LogicalShiftLeftInstruction<'s>),
+    ArithmeticShiftLeft(ArithmeticShiftLeftInstruction<'s>),
+    And(AndInstruction<'s>),
+    Or(OrInstruction<'s>),
+    XOr(XOrInstruction<'s>)
 }
 
 impl Display for Instruction<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         (match self {
             Self::ShiftLeft(it) => it as &dyn Display,
+            Self::LogicalShiftLeft(it) => it as &dyn Display,
+            Self::ArithmeticShiftLeft(it) => it as &dyn Display,
+            Self::And(it) => it as &dyn Display,
+            Self::Or(it) => it as &dyn Display,
+            Self::XOr(it) => it as &dyn Display
         }).fmt(f)
     }
 }

@@ -6,6 +6,7 @@ pub mod terminator;
 pub mod unary_operator;
 pub mod binary_operator;
 pub mod bitwise_binary_operator;
+pub mod vector_operator;
 
 pub enum Instruction<'s> {
     Terminal(terminator::Instruction<'s>),
