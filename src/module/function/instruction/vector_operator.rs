@@ -4,12 +4,16 @@ use crate::reference::Value;
 
 pub enum Instruction<'s> {
     ExtractElement(ExtractElementInstruction<'s>),
+    InsertElement(InsertElementInstruction<'s>),
+    ShuffleVector(ShuffleVectorInstruction<'s>)
 }
 
 impl Display for Instruction<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         (match self {
             Self::ExtractElement(it) => it as &dyn Display,
+            Self::InsertElement(it) => it as &dyn Display,
+            Self::ShuffleVector(it) => it as &dyn Display
         }).fmt(f)
     }
 }

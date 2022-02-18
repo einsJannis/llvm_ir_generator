@@ -7,12 +7,17 @@ pub mod unary_operator;
 pub mod binary_operator;
 pub mod bitwise_binary_operator;
 pub mod vector_operator;
+pub mod aggregate_operator;
+pub mod memory_operator;
 
 pub enum Instruction<'s> {
     Terminal(terminator::Instruction<'s>),
     UnaryOperator(unary_operator::Instruction<'s>),
     BinaryOperator(binary_operator::Instruction<'s>),
     BitwiseBinaryOperator(bitwise_binary_operator::Instruction<'s>),
+    VectorOperator(vector_operator::Instruction<'s>),
+    AggregateOperator(aggregate_operator::Instruction<'s>),
+    MemoryOperator(memory_operator::Instruction<'s>),
 }
 
 impl Display for Instruction<'_> {
@@ -22,6 +27,9 @@ impl Display for Instruction<'_> {
             Instruction::UnaryOperator(it) => it as &dyn Display,
             Instruction::BinaryOperator(it) => it as &dyn Display,
             Instruction::BitwiseBinaryOperator(it) => it as &dyn Display,
+            Instruction::VectorOperator(it) => it as &dyn Display,
+            Instruction::AggregateOperator(it) => it as &dyn Display,
+            Instruction::MemoryOperator(it) => it as &dyn Display,
         }).fmt(f)
     }
 }
