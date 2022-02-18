@@ -34,3 +34,81 @@ impl Display for ShiftLeftInstruction<'_> {
     }
 }
 
+pub struct LogicalShiftLeftInstruction<'s> {
+    exact: bool,
+    lhs: Value<'s>,
+    rhs: Value<'s>
+}
+
+impl Display for LogicalShiftLeftInstruction<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("lshr ")?;
+        if self.exact { f.write_str("exact ")?; }
+        f.write_fmt(format_args!("{}, {}", self.lhs, match &self.rhs {
+            Value::Constant(it) => it as &dyn Display,
+            Value::Reference(it) => it as &dyn Display
+        }))?;
+        Ok(())
+    }
+}
+
+pub struct ArithmeticShiftLeftInstruction<'s> {
+    exact: bool,
+    lhs: Value<'s>,
+    rhs: Value<'s>
+}
+
+impl Display for ArithmeticShiftLeftInstruction<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("ashr ")?;
+        if self.exact { f.write_str("exact ")?; }
+        f.write_fmt(format_args!("{}, {}", self.lhs, match &self.rhs {
+            Value::Constant(it) => it as &dyn Display,
+            Value::Reference(it) => it as &dyn Display
+        }))?;
+        Ok(())
+    }
+}
+
+pub struct AndInstruction<'s> {
+    lhs: Value<'s>,
+    rhs: Value<'s>
+}
+
+impl Display for AndInstruction<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("and {}, {}", self.lhs, match &self.rhs {
+            Value::Constant(it) => it as &dyn Display,
+            Value::Reference(it) => it as &dyn Display
+        }))
+    }
+}
+
+pub struct OrInstruction<'s> {
+    lhs: Value<'s>,
+    rhs: Value<'s>
+}
+
+impl Display for OrInstruction<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("or {}, {}", self.lhs, match &self.rhs {
+            Value::Constant(it) => it as &dyn Display,
+            Value::Reference(it) => it as &dyn Display
+        }))
+    }
+}
+
+pub struct XOrInstruction<'s> {
+    lhs: Value<'s>,
+    rhs: Value<'s>
+}
+
+impl Display for XOrInstruction<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("xor {}, {}", self.lhs, match &self.rhs {
+            Value::Constant(it) => it as &dyn Display,
+            Value::Reference(it) => it as &dyn Display
+        }))
+    }
+}
+
