@@ -4,17 +4,23 @@ use crate::identifier::LocalIdentifier;
 
 pub mod terminator;
 pub mod unary_operator;
+pub mod binary_operator;
+pub mod bitwise_binary_operator;
 
 pub enum Instruction<'s> {
     Terminal(terminator::Instruction<'s>),
-    UnaryOperator(unary_operator::Instruction<'s>)
+    UnaryOperator(unary_operator::Instruction<'s>),
+    BinaryOperator(binary_operator::Instruction<'s>),
+    BitwiseBinaryOperator(bitwise_binary_operator::Instruction<'s>),
 }
 
 impl Display for Instruction<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         (match self {
             Instruction::Terminal(it) => it as &dyn Display,
-            Instruction::UnaryOperator(it) => it as &dyn Display
+            Instruction::UnaryOperator(it) => it as &dyn Display,
+            Instruction::BinaryOperator(it) => it as &dyn Display,
+            Instruction::BitwiseBinaryOperator(it) => it as &dyn Display,
         }).fmt(f)
     }
 }

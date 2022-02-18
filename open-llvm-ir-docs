@@ -1,0 +1,4 @@
+#!/bin/sh
+
+xdg-open https://llvm.org/docs/LangRef.html &
+
