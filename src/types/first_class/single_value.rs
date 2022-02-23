@@ -115,7 +115,7 @@ impl Display for X86MMXType {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct PointerType {
-    _type: Box<crate::types::Type>,
+    pub(crate) _type: Box<crate::types::Type>,
     address_space: usize
 }
 
