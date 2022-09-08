@@ -1,5 +1,7 @@
 use std::fmt::{Display, Debug};
 
+use crate::IRElement;
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum Type {
     Integer(IntegerType),
@@ -46,6 +48,8 @@ impl From<VectorType> for Type {
     }
 }
 
+impl IRElement for Type {}
+
 impl Display for Type {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let displayable: &dyn Display = match self {
@@ -64,6 +68,8 @@ impl Display for Type {
 #[repr(transparent)]
 pub struct IntegerType(pub usize);
 
+impl IRElement for IntegerType {}
+
 impl Display for IntegerType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!("i{}", self.0))
@@ -80,6 +86,8 @@ pub enum FloatType {
     X86FP80,
     PPCFP128
 }
+
+impl IRElement for FloatType {}
 
 impl Display for FloatType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -98,6 +106,8 @@ impl Display for FloatType {
 #[derive(Debug, Clone, PartialEq)]
 pub struct X86AMXType;
 
+impl IRElement for X86AMXType {}
+
 impl Display for X86AMXType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str("x86_amx")
@@ -106,6 +116,8 @@ impl Display for X86AMXType {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct X86MMXType;
+
+impl IRElement for X86MMXType {}
 
 impl Display for X86MMXType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -118,6 +130,8 @@ pub struct PointerType {
     pub(crate) _type: Box<crate::types::Type>,
     address_space: usize
 }
+
+impl IRElement for PointerType {}
 
 impl PointerType {
     pub fn new(_type: Box<crate::types::Type>) -> PointerType {

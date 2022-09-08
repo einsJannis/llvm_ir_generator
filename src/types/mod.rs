@@ -1,5 +1,6 @@
 use core::fmt::{Display, Debug};
 
+use crate::IRElement;
 use crate::module::function::Function;
 
 pub mod first_class;
@@ -117,6 +118,8 @@ impl From<first_class::aggregate::OpaqueStructType> for Type {
     }
 }
 
+impl IRElement for Type {}
+
 impl Display for Type {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let displayable: &dyn Display = match self {
@@ -139,6 +142,8 @@ impl FunctionType {
         FunctionType { return_type, argument_types }
     }
 }
+
+impl IRElement for FunctionType {}
 
 impl Display for FunctionType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

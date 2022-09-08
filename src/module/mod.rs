@@ -7,11 +7,22 @@ pub mod function;
 #[repr(transparent)]
 pub struct Module<'s>(Vec<ModuleElement<'s>>);
 
+#[derive(Debug, Clone, PartialEq)]
 pub enum ModuleElement<'s> {
     GlobalVariable(global_variable::GlobalVariable<'s>)
 }
 
-#[derive(Debug)]
+impl<'s> IRElement for ModuleElement<'s> {}
+
+impl<'s> Display for ModuleElement<'s> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::GlobalVariable(it) => it.fmt(f)
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
 #[repr(C)]
 pub enum LinkageType {
     Private,
@@ -26,6 +37,8 @@ pub enum LinkageType {
     WeakOdr,
     External
 }
+
+impl IRElement for LinkageType {}
 
 impl Display for LinkageType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -45,9 +58,7 @@ impl Display for LinkageType {
     }
 }
 
-impl IRElement for LinkageType {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 #[repr(C)]
 pub enum CallingConvention {
     C,
@@ -66,6 +77,8 @@ pub enum CallingConvention {
     //PropirataryBullShit,
     Numbered(usize)
 }
+
+impl IRElement for CallingConvention {}
 
 impl Display for CallingConvention {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -92,15 +105,15 @@ impl Display for CallingConvention {
     }
 }
 
-impl IRElement for CallingConvention {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 #[repr(C)]
 pub enum VisibilityStyle {
     Default,
     Hidden,
     Protected
 }
+
+impl IRElement for VisibilityStyle {}
 
 impl Display for VisibilityStyle {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -112,14 +125,14 @@ impl Display for VisibilityStyle {
     }
 }
 
-impl IRElement for VisibilityStyle {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 #[repr(C)]
 pub enum DLLStorageClass {
     Import,
     Export
 }
+
+impl IRElement for DLLStorageClass {}
 
 impl Display for DLLStorageClass {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -130,9 +143,7 @@ impl Display for DLLStorageClass {
     }
 }
 
-impl IRElement for DLLStorageClass {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 #[repr(C)]
 pub enum ThreadLocalStorageModel {
     LocalDynamic,
@@ -140,6 +151,8 @@ pub enum ThreadLocalStorageModel {
     LocalExecution,
     GeneralDynamic
 }
+
+impl IRElement for ThreadLocalStorageModel {}
 
 impl Display for ThreadLocalStorageModel {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -152,14 +165,14 @@ impl Display for ThreadLocalStorageModel {
     }
 }
 
-impl IRElement for ThreadLocalStorageModel {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 #[repr(C)]
 pub enum RuntimePreemptionSpecifier {
     Preemptable,
     Local
 }
+
+impl IRElement for RuntimePreemptionSpecifier {}
 
 impl Display for RuntimePreemptionSpecifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -170,14 +183,14 @@ impl Display for RuntimePreemptionSpecifier {
     }
 }
 
-impl IRElement for RuntimePreemptionSpecifier {}
-
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 #[repr(C)]
 pub enum UnnamedAddress {
     Local,
     NonLocal
 }
+
+impl IRElement for UnnamedAddress {}
 
 impl Display for UnnamedAddress {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -187,6 +200,4 @@ impl Display for UnnamedAddress {
         })
     }
 }
-
-impl IRElement for UnnamedAddress {}
 

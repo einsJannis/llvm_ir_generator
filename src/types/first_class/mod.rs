@@ -1,4 +1,5 @@
 use std::fmt::Display;
+use crate::IRElement;
 
 pub mod single_value;
 pub mod aggregate;
@@ -96,6 +97,8 @@ impl From<aggregate::OpaqueStructType> for Type {
     }
 }
 
+impl IRElement for Type {}
+
 impl Display for Type {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let displayable: &dyn Display = match self {
@@ -109,6 +112,8 @@ impl Display for Type {
     }
 }
 
+impl IRElement for LabelType {}
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct LabelType;
 
@@ -121,6 +126,8 @@ impl Display for LabelType {
 #[derive(Debug, Clone, PartialEq)]
 pub struct TokenType;
 
+impl IRElement for TokenType {}
+
 impl Display for TokenType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str("token")
@@ -129,6 +136,8 @@ impl Display for TokenType {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct MetadataType;
+
+impl IRElement for MetadataType {}
 
 impl Display for MetadataType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

@@ -1,5 +1,7 @@
 use std::fmt::{Display, Debug};
 
+use crate::IRElement;
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum Type {
     Array(ArrayType),
@@ -25,6 +27,8 @@ impl From<OpaqueStructType> for Type {
     }
 }
 
+impl IRElement for Type {}
+
 impl Display for Type {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let displayable: &dyn Display = match self {
@@ -48,6 +52,8 @@ impl ArrayType {
     }
 }
 
+impl IRElement for ArrayType {}
+
 impl Display for ArrayType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!("[ {} x {} ]", self.size, self._type))
@@ -69,6 +75,8 @@ impl StructType {
     }
 }
 
+impl IRElement for StructType {}
+
 impl Display for StructType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str("type ")?;
@@ -86,6 +94,8 @@ impl Display for StructType {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct OpaqueStructType;
+
+impl IRElement for OpaqueStructType {}
 
 impl Display for OpaqueStructType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
